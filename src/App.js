@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import generateRoutes from './routes';
+import NotFound from './components/NotFound';
+import { createContext, useContext, useReducer } from 'react';
+import { initialState, reducer } from './service/authReducer';
+import Login from './pages/Login';
+
+const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={{ state, dispatch }}>
+      <Router>
+        <div className="App">
+          <Routes>
+            {generateRoutes(state.isAuthenticated)}
+            <Route path='/' element={<Login />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthContext.Provider>
   );
 }
 

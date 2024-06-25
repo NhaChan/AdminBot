@@ -2,9 +2,9 @@ import authService from './authService'
 
 const authHeader = () => {
   const user = authService.getCurrentUser()
-  if (user && user.jwt) {
+  if (user && user.access_token) {
     return {
-      Authorization: 'Bearer ' + user.jwt,
+      Authorization: 'Bearer ' + user.access_token,
     }
   } else return {}
 }

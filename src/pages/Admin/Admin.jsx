@@ -1,17 +1,6 @@
-import { Button, ConfigProvider, Form, Input, Modal, Select, Space, Spin, message } from 'antd'
+import { Button, ConfigProvider, Form, Input, Modal, Space, Spin, message } from 'antd'
 import React, { useState } from 'react'
 import adminService from '../../service/adminService'
-
-const stopOrder = [
-  {
-    value: 'SOL',
-    label: '>=',
-  },
-  {
-    value: 'SOU',
-    label: '<=',
-  },
-]
 
 const Admin = () => {
   const [form] = Form.useForm()
@@ -25,9 +14,10 @@ const Admin = () => {
     setIsModalOpen(true)
   }
 
-  const handleOk = (values) => {
+  const handleOk = () => {
     const data = {
-      ...values,
+      ...form.getFieldsValue(),
+      stopOrderValue: form.getFieldValue("stopOrderValue") || 0,
       status: currentAction,
     }
     console.log('values', data)
@@ -37,8 +27,8 @@ const Admin = () => {
       .adminPost(data)
       .then((res) => {
         console.log(res)
-        message.success("Gửi lệnh thành công.")
-        form.resetFields()
+        message.success('Gửi lệnh thành công.')
+        // form.resetFields()
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -53,11 +43,6 @@ const Admin = () => {
 
   const handleActionClick = (action) => {
     setCurrentAction(action)
-  }
-
-  const findLabelByValue = (value) => {
-    const option = stopOrder.find((option) => option.value === value)
-    return option ? option.label : ''
   }
 
   return (
@@ -93,12 +78,9 @@ const Admin = () => {
             <Input size="large" placeholder="Số hợp đồng" />
           </Form.Item>
           <Space.Compact className="w-full">
-            <Form.Item className="w-16" name="stopOrder">
-              <Select options={stopOrder} size="large" />
-            </Form.Item>
             <Form.Item
               name="stopOrderValue"
-              className='flex-1'
+              className="flex-1"
               rules={[
                 {
                   pattern: /^\d+(\.\d{1})?$/,
@@ -170,9 +152,9 @@ const Admin = () => {
       <Modal
         title={currentAction === 'CANCEL_ALL' ? 'Xác nhận hủy tất cả' : 'Thông tin đặt lệnh'}
         open={isModalOpen}
-        onOk={() => handleOk(form.getFieldsValue())}
+        onOk={handleOk}
         okText={loading ? <Spin /> : 'OK'}
-        okButtonProps={{disabled: loading}}
+        okButtonProps={{ disabled: loading }}
         onCancel={handleCancel}
       >
         {currentAction === 'CANCEL_ALL' ? (
@@ -181,13 +163,7 @@ const Admin = () => {
           <>
             <p>Giá đặt: {formData.price}</p>
             <p>Số hợp đồng: {formData.orderNumber}</p>
-            <p>
-              {formData.stopOrderValue && (
-                <strong className="text-green-700">
-                  StopOrder: {findLabelByValue(formData.stopOrder)} {formData.stopOrderValue}
-                </strong>
-              )}
-            </p>
+            <p>StopOder: {formData.stopOrderValue}</p>
             <p className="text-red-700">
               Lệnh đặt: <strong>{currentAction}</strong>
             </p>

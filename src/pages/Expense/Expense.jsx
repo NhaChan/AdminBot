@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Spin, Table, message } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Spin, Table, message } from 'antd'
 import expenseService from '../../service/expenseService'
-import { DeleteOutlined } from '@ant-design/icons'
+import { formatDate, getISOString } from '../../service/commonService'
 
 const Expense = () => {
   const [data, setData] = useState([])
@@ -9,7 +9,7 @@ const Expense = () => {
   const [loadingAdd, setLoadingAdd] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(false)
-  const [isID, setIsID] = useState()
+  //const [isID, setIsID] = useState()
 
   const columns = [
     {
@@ -29,6 +29,7 @@ const Expense = () => {
     {
       title: 'Date',
       dataIndex: 'date',
+      render: (value) => formatDate(value),
     },
     {
       title: 'Description',
@@ -58,12 +59,17 @@ const Expense = () => {
       .catch((err) => {
         console.log(err)
       })
-  }, [])
+  }, [editingRecord])
 
   const handleAdd = () => {
+    const nData = {
+      ...form.getFieldsValue(),
+      date: getISOString(form.getFieldValue('date').format()), //dayjs
+    }
+
     setLoadingAdd(true)
     expenseService
-      .addExpense(form.getFieldsValue())
+      .addExpense(nData)
       .then((res) => {
         console.log(res)
         message.success('Thêm giá bot thành công.')
@@ -94,7 +100,7 @@ const Expense = () => {
         </div>
         <div className="h-fit bg-white rounded-lg drop-shadow">
           <div className="text-xl text-center p-4">Price Bot</div>
-          <Form form={form} className="px-4 grid grid-cols-3 gap-2">
+          <Form form={form} onFinish={handleAdd} className="px-4 grid grid-cols-3 gap-2">
             <label htmlFor="name">Name:</label>
             <Form.Item
               name="name"
@@ -132,7 +138,7 @@ const Expense = () => {
                 },
               ]}
             >
-              <Input />
+              <DatePicker className="w-full" />
             </Form.Item>
             <label htmlFor="name">Description:</label>
             <Form.Item
@@ -149,13 +155,7 @@ const Expense = () => {
             </Form.Item>
 
             <div className="col-span-3 flex justify-center items-center space-x-2 mb-2">
-              <Button
-                htmlType="submit"
-                type="primary"
-                size="large"
-                className=" "
-                onClick={handleAdd}
-              >
+              <Button htmlType="submit" type="primary" size="large">
                 {loadingAdd ? <Spin /> : 'Thêm'}
               </Button>
             </div>

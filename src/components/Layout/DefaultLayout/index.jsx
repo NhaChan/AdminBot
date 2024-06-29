@@ -12,17 +12,7 @@ const DefaultLayout = ({ children }) => {
         <Sidebar />
         <Layout>
           <Header />
-          <Content style={{ margin: '0 16px' }}>
-            <div
-              style={{
-                padding: 24,
-                // minHeight: 360,
-              }}
-              className="bg-white rounded-lg mt-5"
-            >
-              {children}
-            </div>
-          </Content>
+          <Content className="m-4 p-4 drop-shadow rounded-lg bg-white">{children}</Content>
           <Footer />
         </Layout>
       </Layout>

@@ -18,7 +18,6 @@ const Login = () => {
       .login(form.getFieldsValue())
       .then((res) => {
         dispatch(authActions.LOGIN)
-        console.log(res)
         message.success('Đăng nhập thành công')
         navigate('/home')
       })
@@ -36,14 +35,14 @@ const Login = () => {
           <div className="flex justify-center items-center font-bold mb-8 text-xl text-green-800">
             Chào Admin!
           </div>
-          <Form form={form} onFinish={handleSubmit} className='space-y-6'>
-            <Form.Item 
-              name="username" 
+          <Form form={form} onFinish={handleSubmit} className="space-y-6">
+            <Form.Item
+              name="username"
               rules={[
                 {
                   required: true,
-                  message: "Số điện thoại là bắt buộc."
-                }
+                  message: 'Số điện thoại là bắt buộc.',
+                },
               ]}
             >
               <Input

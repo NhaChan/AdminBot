@@ -1,10 +1,10 @@
-import authService from './authService'
+import Cookies from 'js-cookie'
 
 const authHeader = () => {
-  const user = authService.getCurrentUser()
-  if (user && user.access_token) {
+  const token = Cookies.get('access_token')
+  if (token) {
     return {
-      Authorization: 'Bearer ' + user.access_token,
+      Authorization: 'Bearer ' + token,
     }
   } else return {}
 }

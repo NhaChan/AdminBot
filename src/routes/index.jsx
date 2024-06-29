@@ -1,40 +1,79 @@
 import { Fragment } from 'react'
 import DefaultLayout from '../components/Layout/DefaultLayout'
 import { Navigate, Route } from 'react-router-dom'
-import { PieChartOutlined, UserOutlined, FileZipOutlined } from '@ant-design/icons'
+import {
+  PieChartOutlined,
+  UserOutlined,
+  FileZipOutlined,
+  MoneyCollectOutlined,
+  QqOutlined,
+} from '@ant-design/icons'
 import Admin from '../pages/Admin'
 import Users from '../pages/Users'
 import File from '../pages/File'
+import Profit from '../pages/Profit'
+import PriceBot from '../pages/PriceBot'
+import Login from '../pages/Login'
+import Expense from '../pages/Expense'
 
 export const navigateItems = [
   { key: '/home', icon: <PieChartOutlined />, label: 'Home' },
   { key: '/users', icon: <UserOutlined />, label: 'Users' },
+  { key: '/price-bot', icon: <QqOutlined />, label: 'Price Bot' },
+  { key: '/expenes', icon: <MoneyCollectOutlined />, label: 'Chi tiêu' },
+  { key: '/profit', icon: <MoneyCollectOutlined />, label: 'Profit' },
   { key: '/file', icon: <FileZipOutlined />, label: 'File' },
 ]
 
-export const publicRoutes = [
-  // { path: '/', component: Login, Layout: null },
+const publicRoutes = [{ path: '/', component: Login, layout: null }]
+
+export const privateRoutes = [
   { path: '/home', component: Admin },
   { path: '/users', component: Users },
+  { path: '/price-bot', component: PriceBot },
+  { path: '/expenes', component: Expense },
+  { path: '/profit', component: Profit },
   { path: '/file', component: File },
 ]
 
-const generateRoutes = (isAuthenticated) => {
+export const generatePublicRoutes = (isAuthenticated) => {
+  return publicRoutes.map((route, index) => {
+    const Page = route.component
+    let Layout = DefaultLayout
+
+    if (route.layout) {
+      Layout = route.layout
+    } else if (route.layout === null) {
+      Layout = Fragment
+    }
+    if (isAuthenticated && route.path === '/') {
+      return <Route key={index} path={route.path} element={<Navigate to="/home" />} />
+    }
+    return (
+      <Route
+        key={index}
+        path={route.path}
+        element={
+          <Layout>
+            <Page />
+          </Layout>
+        }
+      />
+    )
+  })
+}
+
+export const generatePrivateRoutes = (isAuthenticated) => {
   if (isAuthenticated) {
-    return publicRoutes.map((route, index) => {
+    return privateRoutes.map((route, index) => {
       const Page = route.component
       let Layout = DefaultLayout
 
-      if (route.Layout) {
-        Layout = route.Layout
-      } else if (route.Layout === null) {
+      if (route.layout) {
+        Layout = route.layout
+      } else if (route.layout === null) {
         Layout = Fragment
       }
-
-      if (isAuthenticated && route.path === '/') {
-        return <Route key={index} path={route.path} element={<Navigate to="/home" />} />
-      }
-
       return (
         <Route
           key={index}
@@ -48,10 +87,8 @@ const generateRoutes = (isAuthenticated) => {
       )
     })
   } else {
-    return publicRoutes.map((route, index) => (
+    return privateRoutes.map((route, index) => (
       <Route key={index} path={route.path} element={<Navigate to="/" />} />
     ))
   }
 }
-
-export default generateRoutes

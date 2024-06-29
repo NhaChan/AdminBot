@@ -15,22 +15,31 @@ const Admin = () => {
   }
 
   const handleOk = () => {
-    const data = {
-      ...form.getFieldsValue(),
-      stopOrderValue: form.getFieldValue("stopOrderValue") || 0,
-      status: currentAction,
-    }
-    console.log('values', data)
+    // const data = {
+    //   ...form.getFieldsValue(),
+    //   stopOrderValue: form.getFieldValue('stopOrderValue') || 0,
+    //   orderNumber: form.getFieldValue('orderNumber') || 0,
+    //   price: form.getFieldValue('price') || 0,
+    //   status: currentAction,
+    // }
+    let data = { status: currentAction }
+    Object.keys(form.getFieldsValue()).forEach(
+      (key) => (data = { ...data, [key]: form.getFieldValue(key) || 0 }),
+    )
 
     setLoading(true)
     adminService
       .adminPost(data)
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         message.success('Gửi lệnh thành công.')
         // form.resetFields()
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.log(err)
+        message.error('Gửi lệnh thất bại.')
+      })
+
       .finally(() => {
         setIsModalOpen(false)
         setLoading(false)
@@ -147,10 +156,27 @@ const Admin = () => {
               Hủy tất cả
             </Button>
           </ConfigProvider>
+          <Button
+            type="primary"
+            size="large"
+            className="mx-2"
+            onClick={() => {
+              handleActionClick('CANCEL_VITHE')
+              showModal()
+            }}
+          >
+            Hủy vị thế
+          </Button>
         </div>
       </Form>
       <Modal
-        title={currentAction === 'CANCEL_ALL' ? 'Xác nhận hủy tất cả' : 'Thông tin đặt lệnh'}
+        title={
+          currentAction === 'CANCEL_ALL'
+            ? 'Xác nhận hủy tất cả'
+            : currentAction === 'CALL_VITHE'
+            ? 'Xác nhận hủy vị thế'
+            : 'Thông tin đặt lệnh'
+        }
         open={isModalOpen}
         onOk={handleOk}
         okText={loading ? <Spin /> : 'OK'}
@@ -159,6 +185,8 @@ const Admin = () => {
       >
         {currentAction === 'CANCEL_ALL' ? (
           <p>Bạn có chắc chắn muốn hủy tất cả không?</p>
+        ) : currentAction === 'CALL_VITHE' ? (
+          <p>Bạn có chắc chắn muốn hủy vị thế không?</p>
         ) : (
           <>
             <p>Giá đặt: {formData.price}</p>

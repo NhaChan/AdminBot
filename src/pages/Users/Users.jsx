@@ -1,75 +1,39 @@
-import React, { useState } from 'react';
-import { Table } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { Table } from 'antd'
+import userService from '../../service/userService'
+
 const columns = [
   {
     title: 'Name',
-    dataIndex: 'name',
-    sorter: (a,b) => a.name.length - b.name.length
+    dataIndex: 'fullname',
+    sorter: (a, b) => a.fullname.length - b.fullname.length,
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    sorter: (a,b) => a.age - b.age
+    title: 'PhoneNumber',
+    dataIndex: 'userName',
+    sorter: (a, b) => a.userName - b.userName,
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
+    title: 'Email',
+    dataIndex: 'email',
   },
-];
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
+]
 
 const Users = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    selections: [
-      Table.SELECTION_ALL,
-      Table.SELECTION_INVERT,
-      Table.SELECTION_NONE,
-      {
-        key: 'odd',
-        text: 'Select Odd Row',
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return false;
-            }
-            return true;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-      {
-        key: 'even',
-        text: 'Select Even Row',
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return true;
-            }
-            return false;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-    ],
-  };
-  return <Table rowSelection={rowSelection} columns={columns} dataSource={data} />;
-};
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    userService
+      .GetAllUser()
+      .then((res) => {
+        setData(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  return <Table columns={columns} dataSource={data} rowKey={(record) => record.email} />
+}
 
 export default Users

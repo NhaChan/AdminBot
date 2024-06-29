@@ -1,6 +1,6 @@
 import React from 'react'
 import Sidebar from '../Sidebar'
-import { Breadcrumb, Layout } from 'antd'
+import { Layout } from 'antd'
 import Header from '../Header'
 import Footer from '../Footer'
 import { Content } from 'antd/es/layout/layout'
@@ -12,25 +12,13 @@ const DefaultLayout = ({ children }) => {
         <Sidebar />
         <Layout>
           <Header />
-          <Content
-            style={{
-              margin: '0 16px',
-            }}
-          >
-            <Breadcrumb
-              style={{
-                margin: '16px 0',
-              }}
-            >
-              <Breadcrumb.Item>Admin</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
+          <Content style={{ margin: '0 16px' }}>
             <div
               style={{
                 padding: 24,
-                minHeight: 360,
+                // minHeight: 360,
               }}
-              className="bg-white rounded-lg"
+              className="bg-white rounded-lg mt-5"
             >
               {children}
             </div>

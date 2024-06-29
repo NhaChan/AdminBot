@@ -8,7 +8,6 @@ import { BankTwoTone } from '@ant-design/icons'
 import { navigateItems } from '../../../routes'
 import { useAuth } from '../../../App'
 
-
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
@@ -37,8 +36,10 @@ const Sidebar = () => {
         className="h-screen top-0"
         collapsible
         collapsed={collapsed}
+        breakpoint="md"
+        onBreakpoint={() => setCollapsed(false)}
         onCollapse={(value) => setCollapsed(value)}
-        style={{ position:'sticky'}}
+        style={{ position: 'sticky' }}
       >
         <Flex className="text-center justify-center text-2xl p-10">
           <BankTwoTone />

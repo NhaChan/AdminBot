@@ -2,7 +2,7 @@ import { Button, ConfigProvider, Form, Input, Modal, Space, Spin, message } from
 import React, { useState } from 'react'
 import adminService from '../../service/adminService'
 
-const Admin = () => {
+const Command = () => {
   const [form] = Form.useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({})
@@ -165,7 +165,7 @@ const Admin = () => {
               showModal()
             }}
           >
-            Hủy vị thế
+            Đóng lệnh
           </Button>
         </div>
       </Form>
@@ -202,4 +202,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Command

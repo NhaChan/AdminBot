@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Table } from 'antd'
+import { Table, Switch } from 'antd'
 import userService from '../../service/userService'
 
-const columns = [
+const columns = (handleLockOut) => [
   {
     title: 'Name',
     dataIndex: 'fullname',
-    sorter: (a, b) => a.fullname.length - b.fullname.length,
+    sorter: (a, b) => a.fullname.localeCompare(b),
   },
   {
     title: 'PhoneNumber',
@@ -17,23 +17,46 @@ const columns = [
     title: 'Email',
     dataIndex: 'email',
   },
+  {
+    title: 'Lockout',
+    dataIndex: 'lockoutEnable',
+    render: (value, record) => (
+      <Switch onClick={(value) => handleLockOut(value, record.userId)} defaultValue={value} />
+    ),
+  },
 ]
 
 const Users = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState([])
 
   useEffect(() => {
+    setIsLoading(true)
     userService
-      .GetAllUser()
+      .getAllUser()
       .then((res) => {
+        console.log(res.data)
         setData(res.data)
       })
       .catch((err) => {
         console.log(err)
       })
+      .finally(() => setIsLoading(false))
   }, [])
 
-  return <Table columns={columns} dataSource={data} rowKey={(record) => record.email} />
+  const handleLockOut = (isChecked, userId) => {
+    const data = { userId: userId }
+    isChecked ? userService.lockout(data) : userService.unlock(data)
+  }
+
+  return (
+    <Table
+      loading={isLoading}
+      columns={columns(handleLockOut)}
+      dataSource={data}
+      rowKey={(record) => record.email}
+    />
+  )
 }
 
 export default Users

@@ -17,7 +17,7 @@ const Login = () => {
     authService
       .login(form.getFieldsValue())
       .then((res) => {
-        dispatch(authActions.LOGIN)
+        dispatch(authActions.LOGIN(res.data?.roles))
         message.success('Đăng nhập thành công')
         navigate('/home')
       })
@@ -30,7 +30,7 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50">
-      <div className="lg:w-1/3 md:w-1/2 w-full bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="lg:w-1/3 md:w-1/2 w-11/12 bg-white drop-shadow rounded-lg overflow-hidden">
         <div className="p-12 ">
           <div className="flex justify-center items-center font-bold mb-8 text-xl text-green-800">
             Chào Admin!

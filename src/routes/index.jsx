@@ -8,7 +8,6 @@ import {
   MoneyCollectOutlined,
   QqOutlined,
 } from '@ant-design/icons'
-import Admin from '../pages/Admin'
 import Users from '../pages/Users'
 import File from '../pages/File'
 import Profit from '../pages/Profit'
@@ -16,9 +15,12 @@ import PriceBot from '../pages/PriceBot'
 import Login from '../pages/Login'
 import Expense from '../pages/Expense'
 import Bot from '../pages/Bot'
+import Command from '../pages/Command'
+import Home from '../pages/Home'
 
 export const navigateItems = [
   { key: '/home', icon: <PieChartOutlined />, label: 'Home' },
+  { key: '/command', icon: <PieChartOutlined />, label: 'Command' },
   { key: '/users', icon: <UserOutlined />, label: 'Users' },
   { key: '/price-bot', icon: <QqOutlined />, label: 'Price Bot' },
   { key: '/expenes', icon: <MoneyCollectOutlined />, label: 'Chi tiêu' },
@@ -30,7 +32,8 @@ export const navigateItems = [
 const publicRoutes = [{ path: '/', component: Login, layout: null }]
 
 export const privateRoutes = [
-  { path: '/home', component: Admin },
+  { path: '/home', component: Home },
+  { path: '/command', component: Command },
   { path: '/users', component: Users },
   { path: '/price-bot', component: PriceBot },
   { path: '/expenes', component: Expense },

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Spin, Table, message } from 'antd'
+import { Button, Form, Input, Modal, Select, Spin, Table, message } from 'antd'
 import pricebotService from '../../service/pricebotService'
+import botService from '../../service/botService'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useLoading } from '../../App'
 
@@ -9,11 +10,12 @@ const PriceBot = () => {
   const [data, setData] = useState([])
   const [form] = Form.useForm()
   const [loadingAdd, setLoadingAdd] = useState(false)
-  const [loadingupdated, setLoadingupdated] = useState(false)
+  const [loadingUpdated, setLoadingUpdated] = useState(false)
   const [editingRecord, setEditingRecord] = useState(false)
   const [month, setMonth] = useState('')
-  const [botTradingId, setBotTrandingId] = useState('')
+  const [botTradingId, setBotTradingId] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [botOptions, setBotOptions] = useState([])
 
   const columns = (onEdit) => [
     {
@@ -43,8 +45,6 @@ const PriceBot = () => {
             icon={<EditOutlined />}
             onClick={() => {
               onEdit(record)
-              setMonth(record.month)
-              setBotTrandingId(record.botTradingId)
             }}
           />
           <Button
@@ -53,40 +53,35 @@ const PriceBot = () => {
             onClick={() => {
               setIsModalOpen(true)
               setMonth(record.month)
-              setBotTrandingId(record.botTradingId)
+              setBotTradingId(record.botTradingId)
             }}
           />
         </>
       ),
     },
   ]
+
   useEffect(() => {
     setIsLoading(true)
-    pricebotService
-      .getPriceBot()
-      .then((res) => setData(res.data))
+    Promise.all([pricebotService.getPriceBot(), botService.getAllBot()])
+      .then(([priceBotRes, botRes]) => {
+        setData(priceBotRes.data)
+        setBotOptions(botRes.data.map((bot) => ({ label: bot.name, value: bot.id })))
+      })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
   }, [setIsLoading, editingRecord])
 
-  // const featchData = () => {
-  //   pricebotService
-  //     .getPriceBot()
-  //     .then((res) => setData(res.data))
-  //     .catch((err) => console.log(err))
-  //     .finally(() => setIsLoading(false))
-  // }
   const onEdit = (record) => {
     form.setFieldsValue(record)
   }
 
   const handleUpdate = () => {
-    setLoadingupdated(true)
+    setLoadingUpdated(true)
     const formData = form.getFieldsValue()
     pricebotService
       .updatePriceBot(formData.month, formData.botTradingId, formData)
       .then((res) => {
-        console.log(res)
         message.success('Cập nhật thành công!')
         setEditingRecord(!editingRecord)
         form.resetFields()
@@ -95,7 +90,7 @@ const PriceBot = () => {
         console.log(err)
         message.error('Lỗi cập nhật.')
       })
-      .finally(() => setLoadingupdated(false))
+      .finally(() => setLoadingUpdated(false))
   }
 
   const handleAdd = () => {
@@ -103,7 +98,6 @@ const PriceBot = () => {
     pricebotService
       .addPriceBot(form.getFieldsValue())
       .then((res) => {
-        console.log(res)
         message.success('Thêm giá bot thành công.')
         setEditingRecord(!editingRecord)
         form.resetFields()
@@ -112,15 +106,10 @@ const PriceBot = () => {
       .finally(() => setLoadingAdd(false))
   }
 
-  // const showModal = () => {
-  //   setIsModalOpen(true)
-  // }
-
   const handleOk = () => {
     pricebotService
-      .deletePrictbot(month, botTradingId)
+      .deletePriceBot(month, botTradingId)
       .then((res) => {
-        // console.log(res)
         const newData = data.filter(
           (item) => !(item.month === month && item.botTradingId === botTradingId),
         )
@@ -161,27 +150,15 @@ const PriceBot = () => {
             <Form.Item name="discount" className="col-span-2">
               <Input />
             </Form.Item>
-            <label htmlFor="discount">BotID:</label>
+            <label htmlFor="botTradingId">BotID:</label>
             <Form.Item name="botTradingId" className="col-span-2">
-              <Input disabled defaultValue={1} />
+              <Select options={botOptions} defaultValue={botOptions[0]?.value} />
             </Form.Item>
             <div className="col-span-3 flex justify-center items-center space-x-2 mb-2">
-              <Button
-                htmlType="submit"
-                type="primary"
-                size="large"
-                className=""
-                onClick={handleUpdate}
-              >
-                {loadingupdated ? <Spin /> : 'Cập nhật'}
+              <Button htmlType="submit" type="primary" size="large" onClick={handleUpdate}>
+                {loadingUpdated ? <Spin /> : 'Cập nhật'}
               </Button>
-              <Button
-                htmlType="submit"
-                type="primary"
-                size="large"
-                className=" "
-                onClick={handleAdd}
-              >
+              <Button htmlType="submit" type="primary" size="large" onClick={handleAdd}>
                 {loadingAdd ? <Spin /> : 'Thêm'}
               </Button>
             </div>

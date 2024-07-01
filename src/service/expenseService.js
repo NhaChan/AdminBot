@@ -1,8 +1,8 @@
 import axios from 'axios'
 import authHeader from './authHeader'
 
-const API_URL = 'https://minhnhat27.id.vn/api/expense'
-// const API_URL = 'https://0f09705989af6b.lhr.life/api/admin/upload'
+const API_URL = process.env.REACT_APP_BASE_URL + '/api/expense'
+// const API_URL = 'https://0f09705989af6b.lhr.life/api/expense'
 // const API_URL = 'https://localhost:7043/api/expense'
 
 const getExpense = async () => await axios.get(API_URL + `/getAll`, { headers: authHeader() })

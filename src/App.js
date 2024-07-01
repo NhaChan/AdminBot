@@ -38,8 +38,7 @@ function App() {
         <Router>
           <Routes>
             {generatePublicRoutes(state.isAuthenticated)}
-            {generatePrivateRoutes(state.isAuthenticated)}
-            {/* <Route path="/" element={<Login />} /> */}
+            {state.roles?.includes("Admin") && generatePrivateRoutes(state.isAuthenticated)}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

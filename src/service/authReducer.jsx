@@ -4,7 +4,7 @@ const user = authService.getCurrentUser()
 
 export const initialState = {
   isAuthenticated: user !== undefined,
-  roles: user !== undefined ? [user.roles] : [],
+  roles: user !== undefined ? user.roles : [],
 }
 export const reducer = (state, action) => {
   switch (action.type) {

@@ -2,7 +2,7 @@ import axios from 'axios'
 import authHeader from './authHeader'
 
 // const API_URL = 'https://localhost:7043/api/priceBot'
-const API_URL = 'https://minhnhat27.id.vn/api/priceBot'
+const API_URL = process.env.REACT_APP_BASE_URL + '/api/priceBot'
 
 const getPriceBot = async () => await axios.get(API_URL + '/getAll', { headers: authHeader() })
 

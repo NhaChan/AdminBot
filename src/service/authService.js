@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
-//const API_URL = 'https://localhost:7043/api/auth'
+// const API_URL = 'https://localhost:7043/api/auth'
 const API_URL = 'https://minhnhat27.id.vn/api/auth'
 // const API_URL = 'https://fff3a8e6a10ca3.lhr.life/api/auth'
 

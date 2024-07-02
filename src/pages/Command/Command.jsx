@@ -1,8 +1,10 @@
-import { Button, ConfigProvider, Form, Input, Modal, Space, Spin, message } from 'antd'
+import { Button, ConfigProvider, Form, Input, Modal, Space, Spin } from 'antd'
 import React, { useState } from 'react'
 import adminService from '../../service/adminService'
+import { useMessage } from '../../App'
 
 const Command = () => {
+  const { antMessage } = useMessage()
   const [form] = Form.useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({})
@@ -15,13 +17,6 @@ const Command = () => {
   }
 
   const handleOk = () => {
-    // const data = {
-    //   ...form.getFieldsValue(),
-    //   stopOrderValue: form.getFieldValue('stopOrderValue') || 0,
-    //   orderNumber: form.getFieldValue('orderNumber') || 0,
-    //   price: form.getFieldValue('price') || 0,
-    //   status: currentAction,
-    // }
     let data = { status: currentAction }
     Object.keys(form.getFieldsValue()).forEach(
       (key) => (data = { ...data, [key]: form.getFieldValue(key) || 0 }),
@@ -30,29 +25,20 @@ const Command = () => {
     setLoading(true)
     adminService
       .adminPost(data)
-      .then((res) => {
-        // console.log(res)
-        message.success('Gửi lệnh thành công.')
-        // form.resetFields()
+      .then(() => {
+        antMessage.success('Gửi lệnh thành công.')
+        form.resetFields()
       })
-      .catch((err) => {
-        console.log(err)
-        message.error('Gửi lệnh thất bại.')
-      })
-
+      .catch(() => antMessage.error('Gửi lệnh thất bại.'))
       .finally(() => {
         setIsModalOpen(false)
         setLoading(false)
       })
   }
 
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
+  const handleCancel = () => setIsModalOpen(false)
 
-  const handleActionClick = (action) => {
-    setCurrentAction(action)
-  }
+  const handleActionClick = (action) => setCurrentAction(action)
 
   return (
     <>
@@ -101,13 +87,13 @@ const Command = () => {
             </Form.Item>
           </Space.Compact>
         </div>
-        <div className="flex justify-center mt-4">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
           <Button
             htmlType="submit"
             type="primary"
             danger
             size="large"
-            className="mx-2"
+            className="md:col-start-2"
             onClick={() => handleActionClick('SHORT')}
           >
             SHORT
@@ -127,7 +113,6 @@ const Command = () => {
               htmlType="submit"
               type="primary"
               size="large"
-              className="mx-2"
               onClick={() => handleActionClick('LONG')}
             >
               LONG
@@ -147,7 +132,6 @@ const Command = () => {
             <Button
               type="primary"
               size="large"
-              className="mx-2"
               onClick={() => {
                 handleActionClick('CANCEL_ALL')
                 showModal()
@@ -159,7 +143,6 @@ const Command = () => {
           <Button
             type="primary"
             size="large"
-            className="mx-2"
             onClick={() => {
               handleActionClick('CANCEL_VITHE')
               showModal()

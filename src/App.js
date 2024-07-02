@@ -4,7 +4,7 @@ import NotFound from './components/NotFound'
 import { createContext, useContext, useEffect, useState, useReducer } from 'react'
 import { initialState, reducer } from './service/authReducer'
 import authService from './service/authService'
-import { Spin } from 'antd'
+import { Spin, message } from 'antd'
 
 const AuthContext = createContext()
 export const useAuth = () => useContext(AuthContext)
@@ -12,9 +12,13 @@ export const useAuth = () => useContext(AuthContext)
 const LoadingContext = createContext()
 export const useLoading = () => useContext(LoadingContext)
 
+const MessageContext = createContext()
+export const useMessage = () => useContext(MessageContext)
+
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [isLoading, setIsLoading] = useState(false)
+  const [antMessage, contextHolder] = message.useMessage()
 
   useEffect(() => {
     if (state.isAuthenticated) {
@@ -32,18 +36,21 @@ function App() {
   }, [state.isAuthenticated])
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
-      <AuthContext.Provider value={{ state, dispatch }}>
-        <Spin spinning={isLoading} fullscreen />
-        <Router>
-          <Routes>
-            {generatePublicRoutes(state.isAuthenticated)}
-            {state.roles?.includes("Admin") && generatePrivateRoutes(state.isAuthenticated)}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </AuthContext.Provider>
-    </LoadingContext.Provider>
+    <MessageContext.Provider value={{ antMessage }}>
+      {contextHolder}
+      <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+        <AuthContext.Provider value={{ state, dispatch }}>
+          <Spin spinning={isLoading} fullscreen />
+          <Router>
+            <Routes>
+              {generatePublicRoutes(state.isAuthenticated)}
+              {state.roles?.includes('Admin') && generatePrivateRoutes(state.isAuthenticated)}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+        </AuthContext.Provider>
+      </LoadingContext.Provider>
+    </MessageContext.Provider>
   )
 }
 

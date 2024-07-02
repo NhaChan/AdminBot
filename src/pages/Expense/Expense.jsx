@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Button, DatePicker, Form, Input, Modal, Spin, Table, message } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Spin, Table } from 'antd'
 import expenseService from '../../service/expenseService'
 import { formatDate, getISOString } from '../../service/commonService'
+import { useMessage } from '../../App'
 
 const Expense = () => {
   const [data, setData] = useState([])
@@ -10,6 +11,7 @@ const Expense = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(false)
   //const [isID, setIsID] = useState()
+  const { antMessage } = useMessage()
 
   const columns = [
     {
@@ -56,9 +58,7 @@ const Expense = () => {
       .then((res) => {
         setData(res.data)
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch((err) => console.log(err))
   }, [editingRecord])
 
   const handleAdd = () => {
@@ -71,8 +71,7 @@ const Expense = () => {
     expenseService
       .addExpense(nData)
       .then((res) => {
-        console.log(res)
-        message.success('Thêm giá bot thành công.')
+        antMessage.success('Thêm giá bot thành công.')
         setEditingRecord(!editingRecord)
         form.resetFields()
       })

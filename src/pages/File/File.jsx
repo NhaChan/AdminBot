@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { UploadOutlined } from '@ant-design/icons'
-import { Button, Form, Spin, Upload, message } from 'antd'
+import { Button, Form, Spin, Upload } from 'antd'
 import fileService from '../../service/fileService'
+import { useMessage } from '../../App'
 
 const File = () => {
   const [fileList, setFileList] = useState([])
   const [loading, setLoading] = useState(false)
+  const { antMessage } = useMessage()
 
   const handleChange = (info) => {
     let newFileList = [...info.fileList]
@@ -29,10 +31,10 @@ const File = () => {
     fileService
       .uploadFile(formData)
       .then(() => {
-        message.success('Upload thành công.')
+        antMessage.success('Upload thành công.')
         setFileList([])
       })
-      .catch((err) => message.error(err.message))
+      .catch((err) => antMessage.error(err.message))
       .finally(() => setLoading(false))
   }
 

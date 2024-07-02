@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Switch } from 'antd'
 import userService from '../../service/userService'
+import { useMessage } from '../../App'
 
 const columns = (handleLockOut) => [
   {
@@ -29,24 +30,28 @@ const columns = (handleLockOut) => [
 const Users = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState([])
+  const { antMessage } = useMessage()
 
   useEffect(() => {
     setIsLoading(true)
     userService
       .getAllUser()
-      .then((res) => {
-        console.log(res.data)
-        setData(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+      .then((res) => setData(res.data))
+      .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
   }, [])
 
   const handleLockOut = (isChecked, userId) => {
     const data = { userId: userId }
-    isChecked ? userService.lockout(data) : userService.unlock(data)
+    try {
+      if (isChecked) {
+        userService.lockout(data).then(() => antMessage.success('Đã khóa tài khoản'))
+      } else {
+        userService.unlock(data).then(() => antMessage.success('Đã mở khóa tài khoản'))
+      }
+    } catch (err) {
+      antMessage.error(err.message)
+    }
   }
 
   return (
@@ -54,7 +59,8 @@ const Users = () => {
       loading={isLoading}
       columns={columns(handleLockOut)}
       dataSource={data}
-      rowKey={(record) => record.email}
+      className="overflow-x-auto"
+      rowKey={(record) => record.userId}
     />
   )
 }

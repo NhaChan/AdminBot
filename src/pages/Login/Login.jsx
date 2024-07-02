@@ -1,9 +1,9 @@
-import { Button, ConfigProvider, Form, Input, Spin, message } from 'antd'
+import { Button, ConfigProvider, Form, Input, Spin } from 'antd'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LockOutlined, PhoneOutlined } from '@ant-design/icons'
 import authService from '../../service/authService'
-import { useAuth } from '../../App'
+import { useAuth, useMessage } from '../../App'
 import authActions from '../../service/authAction'
 
 const Login = () => {
@@ -11,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { dispatch } = useAuth()
+  const { antMessage } = useMessage()
 
   const handleSubmit = () => {
     setLoading(true)
@@ -18,13 +19,10 @@ const Login = () => {
       .login(form.getFieldsValue())
       .then((res) => {
         dispatch(authActions.LOGIN(res.data?.roles))
-        message.success('Đăng nhập thành công')
+        antMessage.success('Đăng nhập thành công')
         navigate('/home')
       })
-      .catch((err) => {
-        console.log(err)
-        message.error('Tài khoản hoặc mật khẩu không chính xác')
-      })
+      .catch((err) => antMessage.error(err.response?.data || err.message))
       .finally(() => setLoading(false))
   }
 

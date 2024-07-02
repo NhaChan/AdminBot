@@ -17,11 +17,13 @@ import Expense from '../pages/Expense'
 import Bot from '../pages/Bot'
 import Command from '../pages/Command'
 import Home from '../pages/Home'
+import UserBot from '../pages/UserBot'
 
 export const navigateItems = [
   { key: '/home', icon: <PieChartOutlined />, label: 'Home' },
   { key: '/command', icon: <PieChartOutlined />, label: 'Command' },
   { key: '/users', icon: <UserOutlined />, label: 'Users' },
+  { key: '/user-bot', icon: <UserOutlined />, label: 'User Bot' },
   { key: '/price-bot', icon: <QqOutlined />, label: 'Price Bot' },
   { key: '/expenes', icon: <MoneyCollectOutlined />, label: 'Chi tiêu' },
   { key: '/bot', icon: <MoneyCollectOutlined />, label: 'Bot' },
@@ -35,6 +37,7 @@ export const privateRoutes = [
   { path: '/home', component: Home },
   { path: '/command', component: Command },
   { path: '/users', component: Users },
+  { path: '/user-bot', component: UserBot },
   { path: '/price-bot', component: PriceBot },
   { path: '/expenes', component: Expense },
   { path: '/bot', component: Bot },

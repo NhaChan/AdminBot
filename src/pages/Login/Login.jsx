@@ -15,8 +15,9 @@ const Login = () => {
 
   const handleSubmit = () => {
     setLoading(true)
+    const data = { ...form.getFieldsValue(), ext: false }
     authService
-      .login(form.getFieldsValue())
+      .login(data)
       .then((res) => {
         dispatch(authActions.LOGIN(res.data?.roles))
         antMessage.success('Đăng nhập thành công')
